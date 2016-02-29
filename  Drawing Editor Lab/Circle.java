@@ -1,27 +1,22 @@
 public class Circle extends Shape 
 {
-    private final double radius;
-    final double pi = Math.PI;
-
-    public Circle() 
+    private Ellispe 2D.Double circles;
+    private Point.Double center;
+    private double radius;
+    private Color color;
+    
+    public Circle(Point2D.Double center, double radius, Color color)
     {
-        this(1);
+        this.circle = new Ellipse2D.Double(125, 37, radius*2, radius*2);
+        this.center = center 
     }   
-    public Circle(double radius) 
+    
+    public Point2D.Double getCenter()  
     {
-        this.radius = radius;
+        return this.center;
     }
+    
+    
 
-    @Override
-    public double area() 
-    {
-        // A = π r^2
-        return pi * Math.pow(radius, 2);
-    }
-
-    public double perimeter() 
-    {
-        // P = 2πr
-        return 2 * pi * radius;
-    }
+    
 }

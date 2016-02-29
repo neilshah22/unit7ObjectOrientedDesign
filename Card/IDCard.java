@@ -19,7 +19,7 @@ public class IDCard extends Card
     {
         if (this.getClass() == other.getClass())
         {
-        IDCard other IDCard
+       // IDCard other IDCard;
         boolean is equal = super.equals( otherCard );
         return isEqual && this.idNumber.equals( otherCard.idNumber );
     }
