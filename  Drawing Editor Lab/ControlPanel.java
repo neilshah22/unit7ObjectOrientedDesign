@@ -1,54 +1,91 @@
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.Color;
+
 public class ControlPanel extends JPanel
 {
-    private JFrame frame;
-    private JButton pickColorButton;
-    private JPanel mainPanel;
-    private JButton addCircleDisplay;
-    private JButton addRectangleDisplay;
-    private JLabel label;
+    private Color currColor;
+    
+    private DrawingPanel canvas;
+    
+    private JPanel colorSquare;
+    
+    private JButton colorSelect;
+    private JButton addCircle;
+    private JButton addRectangle;
     public ControlPanel(DrawingPanel canvas)
     {
+
+        colorSelect = new JButton("Select Color");
+        colorSelect.setPreferredSize(new Dimension(150, 50));
+        this.add(colorSelect);
         
-        this.pickColorButton = new JButton("Pick a Color");
-        this.mainPanel.add(this.pickColorButton);
+        currColor = canvas.getColor();
         
-        this.addCircleDisplay = new JButton("Add a Circle");
-        this.mainPanel.add(this.addCircleDisplay);
+        colorSquare = new JPanel();
+        colorSquare.setBackground(currColor);
+        colorSquare.setPreferredSize(new Dimension(50, 50));
+        this.add(colorSquare);
         
-        this.addRectangleDisplay = new JButton("Add a Rectangle");
-        this.mainPanel.add(this.addRectangleDisplay);
+        addCircle = new JButton("Add Circle");
+        addCircle.setPreferredSize(new Dimension(150, 50));
+        this.add(addCircle);
         
-        this.label = new JLabel();
-        this.mainPanel.add(this.label);
+        addRectangle = new JButton("Add Rectangle");
+        addRectangle.setPreferredSize(new Dimension(150, 50));
+        this.add(addRectangle);
         
-        this.frame = new JFrame();
-        this.mainPanel.add(this.frame);
         
+
         ClickListener listener = new ClickListener();
-        this.pickColorButton.addActionListener(listener);
-        this.addCircleDisplay.addActionListener(listener);
-        this.addRectangleDisplay.addActionListener(listener);
+        colorSelect.addActionListener(listener);
         
-        frame.setSize(200,300);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        addCircle.addActionListener(listener);
+        
+        addRectangle.addActionListener(listener);
+        
+        
+        this.canvas = canvas;
     }
-    public static void main( String [] args )
-    {
- 
-    }
+
     public class ClickListener implements ActionListener
     {
-        public void actionPerformed( ActionEvent event )
+        public ClickListener()
+        { 
+        }
+        
+        public void actionPerformed(ActionEvent event)
         {
-            label.setText( "Button" + event.getActionCommand() +" was clicked!" );
+            if (event.getActionCommand().equals("Select Color"))
+            {
+                canvas.pickColor();
+                System.out.println("Select Color");
+                currColor = canvas.getColor();
+                colorSquare.setBackground(currColor);
+            }
+            
+            else if (event.getActionCommand().equals("Add Circle"))
+            {
+                canvas.addCircle();
+                System.out.println("Add Circle");
+            }
+            
+            else if (event.getActionCommand().equals("Add Rectangle"))
+            {
+                canvas.addSquare();
+                System.out.println("Add Rectangle");
+            }
+            
+            else
+            {
+                System.out.println("error");
+            }
+            canvas.repaint();
         }
     }
+    
 }
-        

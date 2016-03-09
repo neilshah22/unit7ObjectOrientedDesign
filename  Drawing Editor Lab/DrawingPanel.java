@@ -1,113 +1,111 @@
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import java.util.ArrayList;
-import java.awt.event.MouseEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.JColorChooser;
 import java.awt.Graphics;
-impoet java.awt.geom.Ellipse
-public class DrawingPanel
+import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
+public class DrawingPanel extends JPanel
 {
-    private ArrayList<Shape>;
+    private ArrayList<Shape> shapes;
     private Shape activeShape;
-    private boolean picked;
-    private boolean movied;
-    private boolean streched;
-    private Color currentDrawingColor;
     
+    private Color currColor;
+    
+    private Dimension dim;
+    
+
     public DrawingPanel()
     {
-        this.setBackGround(colorWhite);
+        this.setBackground(Color.WHITE);
         
-        MousePressListener pressListener = new MousePressListener();
-        this.addMouseListener(pressListener);
+        currColor = Color.BLUE;
         
-        MouseMovementListner movementLisener = new MouseMovementListener();
-        this.addMouseListener(movementListener);
+        shapes = new ArrayList<Shape>();
         
-        this.shapes = new ArrayList<Shape>();
+        dim = new Dimension(1000, 800);
         
-        this.currentDrawingColor = Color.BLUE;
+        this.addMouseListener(new Listener());
+        this.addMouseMotionListener(new Listener());
     }
     
     public Color getColor()
     {
-        return Color.WHITE;
+        return currColor;
     }
     
-    public Demension getPreferredSize()
+    public Dimension getPreferredSize()
     {
-        Dimension wasd = new Dimension(1000, 750);
-        return dimension;
+        return dim;
     }
+    
     public void pickColor()
     {
-        JColorChooser colorChooser = new JColorChooser(Color.Blue);
-    }
-    
-    public void addSquare()
-    {
-        double x = this.getPreferredSize().getWidth()/2;
-        double y = this.getPrefferedSize().getHeight()/2;
-        Point2D.Double center = new Point2D.Double(x,y);
-        Random random = new Random();
-        int lengh = random.nextInt();
-        Square newSquare = new Square(center, lenght, this.currDrawingColor);
-        this.shapes.add(newSquare);
+        currColor = JColorChooser.showDialog(this, "Pick Color", currColor);
     }
     
     public void addCircle()
     {
-        double x = this.getPreferredSize().getWidth()/2;
-        double y = this.getPreferredSize().getHeight()/2;
-        Point2D.Double center = new Point2D.Double(x, y);
-        Random random = new Random();
-        int radius = random.nextInt();
-        Circle newCircle = new Circle(center, radius, this.currDrawingColor);
-        this.shapes.add(newCircle);
+        shapes.add(new Circle(new Point2D.Double(600, 350), 25, currColor));
     }
     
-    public class MousePressListner implements MouseListener
+    public void addSquare()
     {
+        shapes.add(new Square(new Point2D.Double(600, 350), 25, currColor));
+    }
+    
+    public void paintComponent(Graphics g)
+    {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        for(Shape shp: shapes)
+        {
+            shp.draw(g2, activeShape == null? true: (!(activeShape == shp)));
+        }
+    }
+    
+    public class Listener implements MouseListener, MouseMotionListener
+    {
+        private boolean found;
+        
+        public void mouseClicked(MouseEvent event){}
+        
         public void mousePressed(MouseEvent event)
         {
-            Point2D.Double point = new Point2D.Double(event.getX(), event.getY());
-            activeShape = null;
-            for (Shape shape : shapes)
+            found = false;
+            for(Shape shp: shapes)
             {
-                if(shape.isInside(point))
+                if (shp.isInside(new Point2D.Double(event.getX(), event.getY())))
                 {
-                    activeShape shape = shape;
-                }
+                    found = true;
+                    activeShape = shp;
+                }            
             }
+            
+            if(!found)
+            {
+                activeShape = null;
+            }
+            
+            repaint();
         }
         
-        public void mouseClicked(MouseEvent event){}
         public void mouseReleased(MouseEvent event){}
-        public void mouseEntered(MouseEvent event){}
         public void mouseExited(MouseEvent event){}
-    }
-    
-    public class MouseMotionListner implements MouseMotionListener
-    {
-        public void mouse(MouseEvent event)
+        public void mouseEntered(MouseEvent event){}
+        
+        public void mouseDragged(MouseEvent event)
         {
-            Point2D.Double point = new Point2D.Double(event.getX(), event.getY());
-            activeShape = null;
-            for (Shape shape : shapes)
-            {
-                if(shape.isInside(point))
-                {
-                    activeShape shape = shape;
-                }
-            }
+            activeShape.move(event.getX(), event.getY());
+            repaint();
         }
         
-        public void mouseClicked(MouseEvent event){}
-        public void mouseReleased(MouseEvent event){}
-        public void mouseEntered(MouseEvent event){}
-        public void mouseExited(MouseEvent event){}
+        public void mouseMoved(MouseEvent event){}
     }
 }
-
-
